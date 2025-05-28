@@ -1,0 +1,18 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid box with hole -->
+  <path fill="#3c3c43" d="
+    M 20 20 
+    H 80 
+    V 80 
+    H 20 
+    V 20 
+    Z
+    
+    M 50 62
+    A 12 12 0 0 0 62 50
+    A 12 12 0 0 0 50 38
+    A 12 12 0 0 0 38 50
+    A 12 12 0 0 0 50 62
+    Z
+  " />
+</svg> 

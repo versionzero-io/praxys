@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praxys Formatter Plugins Example</title>
+  <style>
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .product h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .price {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #e63946;
+      margin: 8px 0;
+    }
+    .date {
+      color: #666;
+      font-size: 0.9em;
+    }
+    .info-box {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow: auto;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>Praxys Formatter Plugins Example</h1>
+  
+  <div class="info-box">
+    <h2>Type Safety Example</h2>
+    <p>This example uses TypeScript to demonstrate type safety features with Praxys plugins. The implementation is in <code>index.ts</code>.</p>
+    <p>Key type safety benefits:</p>
+    <ul>
+      <li>Plugin configuration options are type-checked</li>
+      <li>Formatted properties are properly typed</li>
+      <li>Developer experience is enhanced with autocompletion</li>
+    </ul>
+  </div>
+  
+  <div id="product-container"></div>
+  
+  <script type="module">
+    // Import from the TypeScript file
+    // The browser will process this as JavaScript when served through a bundler or dev server
+    import { displayProducts } from './index.ts';
+    
+    // Initialize the UI by calling the exported function from our TypeScript code
+    displayProducts('product-container');
+  </script>
+</body>
+</html> 

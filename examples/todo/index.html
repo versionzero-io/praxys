@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praxys Todo App Example</title>
+  <style>
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .todo-app {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .todo-form {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .todo-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      font-size: 16px;
+    }
+    .todo-button {
+      padding: 10px 15px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .todo-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .todo-item:last-child {
+      border-bottom: none;
+    }
+    .todo-checkbox {
+      margin-right: 10px;
+    }
+    .todo-text {
+      flex: 1;
+      font-size: 16px;
+    }
+    .todo-text.completed {
+      text-decoration: line-through;
+      color: #999;
+    }
+    .todo-delete {
+      background-color: #ff4d4f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .todo-filters {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+    .filter-button {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .filter-button.active {
+      background-color: #0066cc;
+      color: white;
+      border-color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Praxys Todo App</h1>
+  
+  <div class="todo-app">
+    <form id="todo-form" class="todo-form">
+      <input type="text" id="todo-input" class="todo-input" placeholder="What needs to be done?">
+      <button type="submit" class="todo-button">Add</button>
+    </form>
+    
+    <ul id="todo-list" class="todo-list"></ul>
+    
+    <div class="todo-filters">
+      <div>
+        <span id="items-left">0 items left</span>
+      </div>
+      <div>
+        <button id="filter-all" class="filter-button active">All</button>
+        <button id="filter-active" class="filter-button">Active</button>
+        <button id="filter-completed" class="filter-button">Completed</button>
+      </div>
+      <div>
+        <button id="clear-completed" class="filter-button">Clear Completed</button>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { praxys, config } from '../../src/index.ts';
+    
+    // Define initial state
+    const initialState = {
+      todos: [],
+      filter: 'all'
+    };
+    
+    // Create configuration
+    const $ = config();
+    
+    // ============================================================
+    // TODO LIST FEATURES
+    // ============================================================
+    
+    $.todos.extend(({ node, state }) => ({
+      /**
+       * Add a new todo item
+       * @param {string} text - Todo item text
+       */
+      addTodo(text) {
+        if (!text.trim()) return;
+        
+        node.push({
+          id: Date.now(),
+          text: text.trim(),
+          completed: false,
+          createdAt: new Date()
+        });
+      },
+      
+      /**
+       * Remove a todo by ID
+       * @param {number} id - Todo ID to remove
+       */
+      removeTodo(id) {
+        const index = node.findIndex(todo => todo.id === id);
+        if (index !== -1) {
+          node.splice(index, 1);
+        }
+      },
+      
+      /**
+       * Toggle completion status of a todo
+       * @param {number} id - Todo ID to toggle
+       */
+      toggleTodo(id) {
+        const todo = node.find(todo => todo.id === id);
+        if (todo) {
+          todo.completed = !todo.completed;
+          todo.updatedAt = new Date();
+        }
+      },
+      
+      /**
+       * Clear all completed todos
+       */
+      clearCompleted() {
+        // Find indices of completed todos
+        const completedIndices = [];
+        for (let i = 0; i < state.length; i++) {
+          if (state[i].completed) {
+            completedIndices.unshift(i);
+          }
+        }
+        
+        // Remove completed todos in reverse order
+        completedIndices.forEach(index => {
+          node.splice(index, 1);
+        });
+      },
+      
+      /**
+       * Get total number of todos
+       */
+      get total() {
+        return node.length;
+      },
+      
+      /**
+       * Get number of completed todos
+       */
+      get completedCount() {
+        return node.filter(todo => todo.completed).length;
+      },
+      
+      /**
+       * Get number of active todos
+       */
+      get activeCount() {
+        return node.length - node.filter(todo => todo.completed).length;
+      }
+    }));
+    
+    // ============================================================
+    // FILTERS
+    // ============================================================
+    
+    // Add filter functionality
+    $.extend(({ node }) => ({
+      /**
+       * Get filtered todos based on current filter
+       */
+      get filteredTodos() {
+        switch (node.filter) {
+          case 'active':
+            return node.todos.filter(todo => !todo.completed);
+          case 'completed':
+            return node.todos.filter(todo => todo.completed);
+          default:
+            return node.todos;
+        }
+      },
+      
+      /**
+       * Set the active filter
+       * @param {string} filter - Filter to set (all, active, completed)
+       */
+      setFilter(filter) {
+        node.filter = filter;
+      }
+    }));
+    
+    // ============================================================
+    // INDIVIDUAL TODO FEATURES
+    // ============================================================
+    
+    // Target individual todos to add special methods
+    $.target(({ path }) => path.match(/^\$\.todos\[\d+\]$/))
+      .extend(({ node }) => ({
+        /**
+         * Toggle the completed state of this todo
+         */
+        toggle() {
+          node.completed = !node.completed;
+          node.updatedAt = new Date();
+        }
+      }));
+    
+    // Initialize Praxys
+    const todoApp = praxys(initialState, $);
+    
+    // DOM References
+    const todoForm = document.getElementById('todo-form');
+    const todoInput = document.getElementById('todo-input');
+    const todoList = document.getElementById('todo-list');
+    const itemsLeft = document.getElementById('items-left');
+    const filterAll = document.getElementById('filter-all');
+    const filterActive = document.getElementById('filter-active');
+    const filterCompleted = document.getElementById('filter-completed');
+    const clearCompleted = document.getElementById('clear-completed');
+    
+    // Event Handlers
+    todoForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const text = todoInput.value.trim();
+      todoApp.todos.addTodo(text);
+      todoInput.value = '';
+    });
+    
+    // Handle filter changes
+    filterAll.addEventListener('click', () => todoApp.setFilter('all'));
+    filterActive.addEventListener('click', () => todoApp.setFilter('active'));
+    filterCompleted.addEventListener('click', () => todoApp.setFilter('completed'));
+    
+    function updateFilterButtons() {
+      filterAll.classList.toggle('active', todoApp.filter === 'all');
+      filterActive.classList.toggle('active', todoApp.filter === 'active');
+      filterCompleted.classList.toggle('active', todoApp.filter === 'completed');
+    }
+    
+    // Clear completed todos
+    clearCompleted.addEventListener('click', () => {
+      todoApp.todos.clearCompleted();
+    });
+    
+    // Render the todo list
+    function renderTodoList() {
+      todoList.innerHTML = '';
+      
+      todoApp.filteredTodos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'todo-checkbox';
+        checkbox.checked = todo.completed;
+        checkbox.addEventListener('change', () => todoApp.todos.toggleTodo(todo.id));
+        
+        const text = document.createElement('span');
+        text.className = `todo-text ${todo.completed ? 'completed' : ''}`;
+        text.textContent = todo.text;
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'todo-delete';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => todoApp.todos.removeTodo(todo.id));
+        
+        li.appendChild(checkbox);
+        li.appendChild(text);
+        li.appendChild(deleteBtn);
+        todoList.appendChild(li);
+      });
+      
+      // Update items left
+      itemsLeft.textContent = `${todoApp.todos.activeCount} ${todoApp.todos.activeCount === 1 ? 'item' : 'items'} left`;
+      
+      // Update filter buttons
+      updateFilterButtons();
+    }
+    
+    // Subscribe to state changes
+    todoApp.watch(() => {
+      renderTodoList();
+    });
+    
+    // Initial render
+    renderTodoList();
+  </script>
+</body>
+</html> 

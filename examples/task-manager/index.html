@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praxys Task Manager Example</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3a0ca3;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --danger: #7209b7;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --border-radius: 6px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      color: var(--gray-800);
+      background-color: var(--gray-100);
+      padding: 2rem;
+    }
+    
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .header p {
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .app {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-gap: 1.5rem;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      background-color: var(--gray-100);
+      padding: 1.5rem;
+      border-right: 1px solid var(--gray-200);
+    }
+    
+    .sidebar-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--gray-800);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .project-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    
+    .project-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: var(--border-radius);
+      background-color: white;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .project-item:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+    
+    .project-item.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .project-name {
+      font-weight: 500;
+    }
+    
+    .project-count {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-left: 0.5rem;
+    }
+    
+    .project-item.active .project-count {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .add-project-form {
+      margin-top: 1rem;
+    }
+    
+    /* Main content */
+    .main {
+      padding: 1.5rem;
+    }
+    
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .main-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    /* Form controls */
+    .form-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-control {
+      display: block;
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .form-control:focus {
+      color: var(--gray-700);
+      background-color: #fff;
+      border-color: var(--primary-light);
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+    
+    select.form-control {
+      max-width: 200px;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      font-weight: 500;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      padding: 0.625rem 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: var(--border-radius);
+      color: #fff;
+      background-color: var(--primary);
+      border: 1px solid transparent;
+      transition: all 0.15s ease-in-out;
+      white-space: nowrap;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary);
+    }
+    
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+    }
+    
+    .btn-success {
+      background-color: var(--success);
+    }
+    
+    /* Tasks */
+    .empty-state {
+      padding: 3rem 2rem;
+      text-align: center;
+      background-color: var(--gray-100);
+      border-radius: var(--border-radius);
+      color: var(--gray-600);
+    }
+    
+    .empty-state p {
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+    }
+    
+    .task-list {
+      list-style: none;
+    }
+    
+    .task-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .task-checkbox {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+    }
+    
+    .task-content {
+      min-width: 0; /* Prevents overflow in flex items */
+    }
+    
+    .task-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      color: var(--gray-800);
+    }
+    
+    .task-title.completed {
+      text-decoration: line-through;
+      color: var(--gray-500);
+    }
+    
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .task-date {
+      display: flex;
+      align-items: center;
+    }
+    
+    .task-priority {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    
+    .priority-high {
+      color: white;
+      background-color: var(--warning);
+    }
+    
+    .priority-medium {
+      color: white;
+      background-color: var(--primary);
+    }
+    
+    .priority-low {
+      color: white;
+      background-color: var(--success);
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .stat-card {
+      background-color: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .app {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-200);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Praxys Task Manager</h1>
+      <p>A comprehensive example showcasing Praxys's state management capabilities with TypeScript.</p>
+    </div>
+    
+    <div class="app">
+      <div class="sidebar">
+        <div class="sidebar-title">
+          <span>Projects</span>
+        </div>
+        
+        <ul id="project-list" class="project-list"></ul>
+        
+        <div class="add-project-form">
+          <div class="form-group">
+            <input type="text" id="project-input" class="form-control" placeholder="New project name">
+            <button id="add-project-btn" class="btn btn-secondary">Add</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="main">
+        <div class="main-header">
+          <h2 id="current-project-name" class="main-title">All Tasks</h2>
+        </div>
+        
+        <div class="form-group">
+          <input type="text" id="task-input" class="form-control" placeholder="Add a new task">
+          <select id="priority-select" class="form-control">
+            <option value="low">Low Priority</option>
+            <option value="medium" selected>Medium Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+          <button id="add-task-btn" class="btn btn-primary">Add Task</button>
+        </div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+          <p>No tasks found in this project.</p>
+          <p>Add your first task using the form above!</p>
+        </div>
+        
+        <ul id="task-list" class="task-list"></ul>
+        
+        <div class="stats">
+          <div class="stat-card">
+            <div id="total-tasks" class="stat-value">0</div>
+            <div class="stat-label">Total Tasks</div>
+          </div>
+          <div class="stat-card">
+            <div id="completed-tasks" class="stat-value">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-card">
+            <div id="pending-tasks" class="stat-value">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html> 
