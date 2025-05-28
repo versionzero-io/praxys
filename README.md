@@ -18,6 +18,22 @@ Praxys offers a fresh approach to state management by combining three powerful c
 
 ## Installation
 
+You can install Praxys directly from the GitHub repository:
+
+```bash
+# Install from GitHub repository
+npm install versionzero-io/praxys
+```
+
+Or if you need a specific branch or version:
+
+```bash
+# Install from a specific branch
+npm install versionzero-io/praxys#main
+```
+
+Once the package is published to npm, you'll be able to install it with:
+
 ```bash
 npm install @versionzero-io/praxys
 ```
@@ -100,7 +116,15 @@ $.user.formatDate({ key: 'birthdate' });
 
 ## Documentation
 
-For complete documentation, start with the [Getting Started Guide](docs/guides/get-started.md). The comprehensive [Cheat Sheet](docs/cheat-sheet.md) is also available for quick reference.
+📖 **[Visit the full documentation](https://versionzero-io.github.io/praxys/)** for comprehensive guides and API references.
+
+The documentation includes:
+- [Getting Started Guide](https://versionzero-io.github.io/praxys/guides/get-started.html)
+- [API Reference](https://versionzero-io.github.io/praxys/api/)
+- [Configuration Patterns](https://versionzero-io.github.io/praxys/guides/config-patterns.html)
+- [Creating Plugins](https://versionzero-io.github.io/praxys/guides/creating-plugins.html)
+- [Performance Optimization](https://versionzero-io.github.io/praxys/guides/performance-optimization.html)
+- [Comprehensive Cheat Sheet](https://versionzero-io.github.io/praxys/cheat-sheet.html)
 
 ## Development
 
