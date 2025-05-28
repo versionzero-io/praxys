@@ -41,7 +41,8 @@ jobs:
       - name: Check for changes
         id: verify-changed-files
         run: |
-          if [ -n "$(git status --porcelain dist/)" ]; then
+          git add -f dist/
+          if [ -n "$(git diff --cached --name-only)" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
