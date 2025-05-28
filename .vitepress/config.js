@@ -89,11 +89,11 @@ export default defineConfig({
       ],
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/praxys/praxys' }
+      { icon: 'github', link: 'https://github.com/versionzero-io/praxys' }
     ],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2023-present Praxys Team'
+      copyright: 'Copyright © 2025 Versionzero.io'
     },
     outline: 'deep',
     docFooter: {
