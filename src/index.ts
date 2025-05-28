@@ -1,4 +1,7 @@
 /**
+ * Praxys - Data Made Practical
+ * A state management library combining declarative configuration, fine-grained reactivity, and a flexible extension system.
+ * 
  * Global namespace declarations for Praxys plugins
  */
 declare global {
