@@ -73,8 +73,8 @@ const store = praxys({
   largeDataset: {} // No Ref suffix in the state
 });
 
-// Access using the Ref suffix
-store.largeDatasetRef = loadHugeDataset();
+// Access using the normal property name (no Ref suffix)
+store.largeDataset = loadHugeDataset();
 ```
 
 Use Refs for:
@@ -209,7 +209,7 @@ store.ignore(() => {
           if (isItemVisible(item)) {
             store.visibleItems.push(item);
           } else {
-            store.hiddenItemsRef.push(item);
+            store.hiddenItems.push(item);
           }
         });
       });

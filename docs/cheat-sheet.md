@@ -190,8 +190,8 @@ const store = praxys({
   largeDataset: {} // State has no Ref suffix
 }, $);
 
-// Usage has Ref suffix
-store.largeDatasetRef = data; // No watchers triggered
+// Usage does not have the Ref suffix
+store.largeDataset = data; // No watchers triggered
 console.log(store.largeDataset); // No dependency created
 ```
 
