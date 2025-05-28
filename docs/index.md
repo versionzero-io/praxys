@@ -99,5 +99,6 @@ npm install @versionzero-io/praxys
       counter.isPositive ? 'Positive' : 'Zero or negative';
   });
 </script>
+```
 
 Ready to learn more? Check out our [Get Started](/guides/get-started) guide for a more comprehensive look at Praxys, or jump to the [Cheat Sheet](/cheat-sheet) for a complete reference.
